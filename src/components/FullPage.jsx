@@ -116,16 +116,17 @@ export default class FullPage extends React.Component {
         if (element === this.mainContainerRef.current || element === window) {
           break;
         } else {
-          console.log('element: ', element);
-          const slider = element.closest('ul.splide__list');
+          if (element !== document) {
+            const slider = element.closest('ul.splide__list');
 
-          if (slider) {
-            const transformStyle = window.getComputedStyle(slider).transform;
-            const matrix = new DOMMatrixReadOnly(transformStyle);
+            if (slider) {
+              const transformStyle = window.getComputedStyle(slider).transform;
+              const matrix = new DOMMatrixReadOnly(transformStyle);
 
-            if (matrix.m41 !== 0) {
-              childHasVerticalScroll = true;
-              break;
+              if (matrix.m41 !== 0) {
+                childHasVerticalScroll = true;
+                break;
+              }
             }
           }
 
