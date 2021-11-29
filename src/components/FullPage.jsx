@@ -116,11 +116,11 @@ export default class FullPage extends React.Component {
         if (element === this.mainContainerRef.current || element === window) {
           break;
         } else {
-          if (element !== document) {
-            const slider = element.closest('ul.splide__list');
+          try {
+            if (element !== document) {
+              const slider = element.closest('ul.splide__list');
 
-            if (slider) {
-              try {
+              if (slider) {
                 const transformStyle = window.getComputedStyle(slider).transform;
                 const matrix = new DOMMatrixReadOnly(transformStyle);
 
@@ -128,22 +128,22 @@ export default class FullPage extends React.Component {
                   childHasVerticalScroll = true;
                   break;
                 }
-              } catch (e) {
-                childHasVerticalScroll = false;
               }
             }
-          }
 
-          const overFlowY = window.getComputedStyle(element)['overflow-y'];
-          if ((overFlowY === 'auto' || overFlowY === 'scroll') && element.scrollHeight > element.clientHeight) {
-            if ((this._touchStart > touchEnd + this._touchSensitivity
+            const overFlowY = window.getComputedStyle(element)['overflow-y'];
+            if ((overFlowY === 'auto' || overFlowY === 'scroll') && element.scrollHeight > element.clientHeight) {
+              if ((this._touchStart > touchEnd + this._touchSensitivity
               && element.scrollHeight > (element.scrollTop + element.clientHeight))
                  || (this._touchStart < touchEnd - this._touchSensitivity && element.scrollTop > 0)
 
-            ) {
-              childHasVerticalScroll = true;
-              break;
+              ) {
+                childHasVerticalScroll = true;
+                break;
+              }
             }
+          } catch (e) {
+            childHasVerticalScroll = false;
           }
         }
       }
