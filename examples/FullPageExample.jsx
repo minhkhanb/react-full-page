@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { Splide, SplideSlide } from '@splidejs/react-splide';
 import { FullPage, Slide } from '../src';
+import '@splidejs/splide/dist/css/themes/splide-default.min.css';
 
 const controlsProps = {
   style: {
@@ -10,10 +12,21 @@ const controlsProps = {
   },
 };
 
+const Slider = () => (
+  <Splide options={{ rewind: true }}>
+    <SplideSlide>
+      <h3>AAAAAAAA</h3>
+    </SplideSlide>
+    <SplideSlide>
+      <h3>BBBBBBBB</h3>
+    </SplideSlide>
+  </Splide>
+);
+
 const slides = [
   {
     color: '#2ECC40',
-    content: 1,
+    content: <Slider />,
   }, {
     color: '#0074D9',
     content: 2,
@@ -58,7 +71,10 @@ export default function FullPageExample() {
               background: color, display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}
           >
-            <h1>{content}</h1>
+            <h1>
+              {content}
+              1111
+            </h1>
           </Slide>
         ))}
       </FullPage>

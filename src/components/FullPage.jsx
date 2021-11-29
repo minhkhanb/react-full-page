@@ -95,8 +95,9 @@ export default class FullPage extends React.Component {
   }
 
   onTouchStart = (evt) => {
+    console.log('evt: ', evt.target);
     this._touchStart = evt.touches[0].clientY;
-    this._isScrolledAlready = false;
+    this._isScrolledAlready = true;
   }
 
   onTouchMove = (evt) => {

@@ -6,7 +6,6 @@ module.exports = {
   entry: {
     index: path.join(__dirname, '/examples/index.jsx'),
   },
-  mode: 'development',
   output: {
     filename: '[name].js',
     path: path.join(__dirname, '/docs/'),
@@ -21,6 +20,13 @@ module.exports = {
         test: /\.jsx?$/,
         use: 'babel-loader',
         exclude: /node_modules/,
+      },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader',
+        ],
       },
     ],
   },
