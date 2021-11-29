@@ -116,6 +116,7 @@ export default class FullPage extends React.Component {
         if (element === this.mainContainerRef.current || element === window) {
           break;
         } else {
+          console.log('element: ', element);
           const slider = element.closest('ul.splide__list');
 
           if (slider) {
