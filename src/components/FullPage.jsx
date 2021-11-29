@@ -27,6 +27,7 @@ export default class FullPage extends React.Component {
     this._touchSensitivity = 5;
     this._touchStart = 0;
     this._isMobile = null;
+    this.mainContainerRef = React.createRef();
 
     this.state = {
       activeSlide: props.initialSlide,
@@ -95,9 +96,8 @@ export default class FullPage extends React.Component {
   }
 
   onTouchStart = (evt) => {
-    console.log('evt: ', evt.target);
     this._touchStart = evt.touches[0].clientY;
-    this._isScrolledAlready = true;
+    this._isScrolledAlready = false;
   }
 
   onTouchMove = (evt) => {
@@ -108,11 +108,50 @@ export default class FullPage extends React.Component {
     evt.preventDefault();
     const touchEnd = evt.changedTouches[0].clientY;
 
-    if (!this._isScrollPending && !this._isScrolledAlready) {
-      if (this._touchStart > touchEnd + this._touchSensitivity) {
-        this.scrollToSlide(this.state.activeSlide + 1);
-      } else if (this._touchStart < touchEnd - this._touchSensitivity) {
-        this.scrollToSlide(this.state.activeSlide - 1);
+    let childHasVerticalScroll = false;
+
+    if (evt.path && evt.path.length) {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const element of evt.path) {
+        if (element === this.mainContainerRef.current || element === window) {
+          break;
+        } else {
+          const slider = element.closest('ul.splide__list');
+
+          if (slider) {
+            const transformStyle = window.getComputedStyle(slider).transform;
+            const matrix = new DOMMatrixReadOnly(transformStyle);
+
+            if (matrix.m41 !== 0) {
+              childHasVerticalScroll = true;
+              break;
+            }
+          }
+
+          const overFlowY = window.getComputedStyle(element)['overflow-y'];
+          if ((overFlowY === 'auto' || overFlowY === 'scroll') && element.scrollHeight > element.clientHeight) {
+            if ((this._touchStart > touchEnd + this._touchSensitivity
+              && element.scrollHeight > (element.scrollTop + element.clientHeight))
+                 || (this._touchStart < touchEnd - this._touchSensitivity && element.scrollTop > 0)
+
+            ) {
+              childHasVerticalScroll = true;
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    if (!childHasVerticalScroll) {
+      evt.preventDefault();
+
+      if (!this._isScrollPending && !this._isScrolledAlready) {
+        if (this._touchStart > touchEnd + this._touchSensitivity) {
+          this.scrollToSlide(this.state.activeSlide + 1);
+        } else if (this._touchStart < touchEnd - this._touchSensitivity) {
+          this.scrollToSlide(this.state.activeSlide - 1);
+        }
       }
     }
   }
@@ -202,7 +241,7 @@ export default class FullPage extends React.Component {
 
   render() {
     return (
-      <div style={{ height: this.state.height }}>
+      <div ref={this.mainContainerRef} style={{ height: this.state.height }}>
         {this.renderControls()}
         {this.props.children}
       </div>
