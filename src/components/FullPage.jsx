@@ -120,12 +120,16 @@ export default class FullPage extends React.Component {
             const slider = element.closest('ul.splide__list');
 
             if (slider) {
-              const transformStyle = window.getComputedStyle(slider).transform;
-              const matrix = new DOMMatrixReadOnly(transformStyle);
+              try {
+                const transformStyle = window.getComputedStyle(slider).transform;
+                const matrix = new DOMMatrixReadOnly(transformStyle);
 
-              if (matrix.m41 !== 0) {
-                childHasVerticalScroll = true;
-                break;
+                if (matrix.m41 !== 0) {
+                  childHasVerticalScroll = true;
+                  break;
+                }
+              } catch (e) {
+                childHasVerticalScroll = false;
               }
             }
           }
