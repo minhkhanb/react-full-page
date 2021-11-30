@@ -108,9 +108,21 @@ export default class FullPage extends React.Component {
     return diffY - this._touchSensitivity > 0 && diffY >= diffX;
   }
 
+  isScrollHappensInMainContainer = (paths) => {
+    if (paths && paths.length) {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const element of paths) {
+        if (element === this.mainContainerRef.current) {
+          return true;
+        }
+      }
+    }
+  }
+
   onTouchMove = (evt) => {
     if (this.props.scrollMode !== scrollMode.FULL_PAGE
-      || !this.isVerticalScrollIntent(evt.changedTouches[0])) {
+      || !this.isVerticalScrollIntent(evt.changedTouches[0])
+      || !this.isScrollHappensInMainContainer(evt.path)) {
       return;
     }
 
