@@ -120,8 +120,12 @@ export default class FullPage extends React.Component {
 
   onTouchMove = (evt) => {
     if (this.props.scrollMode !== scrollMode.FULL_PAGE
-      || !this.isVerticalScrollIntent(evt.changedTouches[0])
       || !this.isScrollHappensInMainContainer(evt.target)) {
+      return;
+    }
+
+    if (!this.isVerticalScrollIntent(evt.changedTouches[0])) {
+      evt.preventDefault();
       return;
     }
 
