@@ -129,7 +129,6 @@ export default class FullPage extends React.Component {
       return;
     }
 
-    evt.preventDefault();
     const touchEnd = evt.changedTouches[0].clientY;
     const { touchSensitivity } = this.props;
 
