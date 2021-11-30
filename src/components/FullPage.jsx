@@ -108,21 +108,20 @@ export default class FullPage extends React.Component {
     return diffY - this._touchSensitivity > 0 && diffY >= diffX;
   }
 
-  isScrollHappensInMainContainer = (paths) => {
-    if (paths && paths.length) {
-      // eslint-disable-next-line no-restricted-syntax
-      for (const element of paths) {
-        if (element === this.mainContainerRef.current) {
-          return true;
-        }
+  isScrollHappensInMainContainer = (element) => {
+    let el = element;
+    while (el) {
+      if (el === this.mainContainerRef.current) {
+        return true;
       }
+      el = el.parentElement;
     }
   }
 
   onTouchMove = (evt) => {
     if (this.props.scrollMode !== scrollMode.FULL_PAGE
       || !this.isVerticalScrollIntent(evt.changedTouches[0])
-      || !this.isScrollHappensInMainContainer(evt.path)) {
+      || !this.isScrollHappensInMainContainer(evt.target)) {
       return;
     }
 
@@ -130,42 +129,40 @@ export default class FullPage extends React.Component {
     const touchEnd = evt.changedTouches[0].clientY;
 
     let childHasVerticalScroll = false;
+    let element = evt.target;
 
-    if (evt.path && evt.path.length) {
-      // eslint-disable-next-line no-restricted-syntax
-      for (const element of evt.path) {
-        if (element.nodeType === Node.ELEMENT_NODE) {
-          if (element === this.mainContainerRef.current) {
-            break;
-          } else {
-            if (element !== document) {
-              const slider = element.closest('ul.splide__list');
+    // eslint-disable-next-line no-restricted-syntax
+    while (element) {
+      if (element === this.mainContainerRef.current) {
+        break;
+      } else {
+        if (element !== document) {
+          const slider = element.closest('ul.splide__list');
 
-              if (slider) {
-                const transformStyle = window.getComputedStyle(slider).transform;
-                const matrix = new DOMMatrixReadOnly(transformStyle);
+          if (slider) {
+            const transformStyle = window.getComputedStyle(slider).transform;
+            const matrix = new DOMMatrixReadOnly(transformStyle);
 
-                if (matrix.m41 !== 0) {
-                  childHasVerticalScroll = true;
-                  break;
-                }
-              }
-            }
-
-            const overFlowY = window.getComputedStyle(element)['overflow-y'];
-            if ((overFlowY === 'auto' || overFlowY === 'scroll') && element.scrollHeight > element.clientHeight) {
-              if ((this._touchStart > touchEnd + this._touchSensitivity
-              && element.scrollHeight > (element.scrollTop + element.clientHeight))
-                 || (this._touchStart < touchEnd - this._touchSensitivity && element.scrollTop > 0)
-
-              ) {
-                childHasVerticalScroll = true;
-                break;
-              }
+            if (matrix.m41 !== 0) {
+              childHasVerticalScroll = true;
+              break;
             }
           }
         }
+
+        const overFlowY = window.getComputedStyle(element)['overflow-y'];
+        if ((overFlowY === 'auto' || overFlowY === 'scroll') && element.scrollHeight > element.clientHeight) {
+          if ((this._touchStart > touchEnd + this._touchSensitivity
+              && element.scrollHeight > (element.scrollTop + element.clientHeight))
+                 || (this._touchStart < touchEnd - this._touchSensitivity && element.scrollTop > 0)
+
+          ) {
+            childHasVerticalScroll = true;
+            break;
+          }
+        }
       }
+      element = element.parentElement;
     }
 
     if (!childHasVerticalScroll) {
