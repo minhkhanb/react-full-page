@@ -105,7 +105,7 @@ export default class FullPage extends React.Component {
     const diffX = Math.abs(this._touchStartX - changedTouches.clientX);
     const diffY = Math.abs(this._touchStart - changedTouches.clientY);
 
-    return diffY - this._touchSensitivity > 0 && diffY >= diffX;
+    return diffY - this.props.touchSensitivity > 0 && diffY >= diffX;
   }
 
   isScrollHappensInMainContainer = (element) => {
@@ -131,6 +131,7 @@ export default class FullPage extends React.Component {
 
     evt.preventDefault();
     const touchEnd = evt.changedTouches[0].clientY;
+    const { touchSensitivity } = this.props;
 
     let childHasVerticalScroll = false;
     let element = evt.target;
@@ -156,9 +157,9 @@ export default class FullPage extends React.Component {
 
         const overFlowY = window.getComputedStyle(element)['overflow-y'];
         if ((overFlowY === 'auto' || overFlowY === 'scroll') && element.scrollHeight > element.clientHeight) {
-          if ((this._touchStart > touchEnd + this._touchSensitivity
+          if ((this._touchStart > touchEnd + touchSensitivity
               && element.scrollHeight > (element.scrollTop + element.clientHeight))
-                 || (this._touchStart < touchEnd - this._touchSensitivity && element.scrollTop > 0)
+                 || (this._touchStart < touchEnd - touchSensitivity && element.scrollTop > 0)
 
           ) {
             childHasVerticalScroll = true;
@@ -173,9 +174,9 @@ export default class FullPage extends React.Component {
       evt.preventDefault();
 
       if (!this._isScrollPending && !this._isScrolledAlready) {
-        if (this._touchStart > touchEnd + this._touchSensitivity) {
+        if (this._touchStart > touchEnd + touchSensitivity) {
           this.scrollToSlide(this.state.activeSlide + 1);
-        } else if (this._touchStart < touchEnd - this._touchSensitivity) {
+        } else if (this._touchStart < touchEnd - touchSensitivity) {
           this.scrollToSlide(this.state.activeSlide - 1);
         }
       }
@@ -288,6 +289,7 @@ FullPage.propTypes = {
   duration: PropTypes.number,
   initialSlide: PropTypes.number,
   scrollMode: PropTypes.oneOf(getObjectValues(scrollMode)),
+  touchSensitivity: PropTypes.number,
 };
 
 FullPage.defaultProps = {
@@ -298,4 +300,5 @@ FullPage.defaultProps = {
   duration: 700,
   initialSlide: 0,
   scrollMode: scrollMode.FULL_PAGE,
+  touchSensitivity: 5,
 };
