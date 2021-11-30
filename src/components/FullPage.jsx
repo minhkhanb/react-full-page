@@ -116,6 +116,8 @@ export default class FullPage extends React.Component {
       }
       el = el.parentElement;
     }
+
+    return false;
   }
 
   onTouchMove = (evt) => {
@@ -142,6 +144,7 @@ export default class FullPage extends React.Component {
       } else {
         if (element !== document) {
           const slider = element.closest('ul.splide__list');
+          const modal = element.closest('.modal');
 
           if (slider) {
             const transformStyle = window.getComputedStyle(slider).transform;
@@ -151,6 +154,11 @@ export default class FullPage extends React.Component {
               childHasVerticalScroll = true;
               break;
             }
+          }
+
+          if (modal) {
+            childHasVerticalScroll = true;
+            break;
           }
         }
 
