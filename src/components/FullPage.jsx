@@ -97,11 +97,20 @@ export default class FullPage extends React.Component {
 
   onTouchStart = (evt) => {
     this._touchStart = evt.touches[0].clientY;
+    this._touchStartX = evt.touches[0].clientX;
     this._isScrolledAlready = false;
   }
 
+  isVerticalScrollIntent = (changedTouches) => {
+    const diffX = Math.abs(this._touchStartX - changedTouches.clientX);
+    const diffY = Math.abs(this._touchStart - changedTouches.clientY);
+
+    return diffY - this._touchSensitivity > 0 && diffY >= diffX;
+  }
+
   onTouchMove = (evt) => {
-    if (this.props.scrollMode !== scrollMode.FULL_PAGE) {
+    if (this.props.scrollMode !== scrollMode.FULL_PAGE
+      || !this.isVerticalScrollIntent(evt.changedTouches[0])) {
       return;
     }
 
@@ -113,10 +122,10 @@ export default class FullPage extends React.Component {
     if (evt.path && evt.path.length) {
       // eslint-disable-next-line no-restricted-syntax
       for (const element of evt.path) {
-        if (element === this.mainContainerRef.current || element === window) {
-          break;
-        } else {
-          try {
+        if (element.nodeType === Node.ELEMENT_NODE) {
+          if (element === this.mainContainerRef.current) {
+            break;
+          } else {
             if (element !== document) {
               const slider = element.closest('ul.splide__list');
 
@@ -142,8 +151,6 @@ export default class FullPage extends React.Component {
                 break;
               }
             }
-          } catch (e) {
-            childHasVerticalScroll = false;
           }
         }
       }
