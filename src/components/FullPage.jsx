@@ -121,7 +121,6 @@ export default class FullPage extends React.Component {
   }
 
   onTouchMove = (evt) => {
-    console.log('evt: ', evt);
     if (this.props.scrollMode !== scrollMode.FULL_PAGE
       || !this.isScrollHappensInMainContainer(evt.target)) {
       return;
@@ -147,7 +146,12 @@ export default class FullPage extends React.Component {
           const slider = element.closest('ul.splide__list');
           const modal = element.closest('.modal');
 
-          if (slider) {
+          const $ = document.querySelector.bind(document);
+          const trending = $('#trending');
+          const follow = $('#following');
+          const isBackgroundVideo = trending || follow;
+
+          if (slider && !isBackgroundVideo) {
             const transformStyle = window.getComputedStyle(slider).transform;
             const matrix = new DOMMatrixReadOnly(transformStyle);
 
