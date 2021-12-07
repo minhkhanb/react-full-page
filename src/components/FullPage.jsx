@@ -149,9 +149,9 @@ export default class FullPage extends React.Component {
           const $ = document.querySelector.bind(document);
           const trending = $('#trending');
           const follow = $('#following');
-          const isBackgroundVideo = trending || follow;
+          const isNotBackgroundVideo = trending || follow;
 
-          if (slider && !isBackgroundVideo) {
+          if (slider && isNotBackgroundVideo) {
             const transformStyle = window.getComputedStyle(slider).transform;
             const matrix = new DOMMatrixReadOnly(transformStyle);
 
