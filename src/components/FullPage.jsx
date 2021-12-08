@@ -146,10 +146,10 @@ export default class FullPage extends React.Component {
           const slider = element.closest('ul.splide__list');
           const modal = element.closest('.modal');
 
-          const $ = document.querySelector.bind(document);
-          const trending = $('#trending');
-          const follow = $('#following');
-          const isNotBackgroundVideo = trending || follow;
+          // const $ = document.querySelector.bind(document);
+          // const trending = $('#trending');
+          // const follow = $('#following');
+          const isNotBackgroundVideo = false; // trending || follow;
 
           if (slider && isNotBackgroundVideo) {
             const transformStyle = window.getComputedStyle(slider).transform;
