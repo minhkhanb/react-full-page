@@ -44,7 +44,7 @@ export default class FullPage extends React.Component {
     } else {
       document.addEventListener('wheel', this.onScroll, { passive: false });
     }
-    window.addEventListener('resize', this.onResize);
+    // window.addEventListener('resize', this.onResize);
     window.addEventListener('orientationchange', () => {
       // Generate a resize event if the device doesn't do it
       this.onResize();
@@ -205,12 +205,6 @@ export default class FullPage extends React.Component {
   }
 
   onTouchEnd = (evt) => {
-    if (this.state.activeSlide >= this._slides.length - 1) {
-      evt.preventDefault();
-      evt.stopPropagation();
-      return;
-    }
-
     if (!this._isScrollPending && !this._isScrolledAlready) {
       const touchEnd = evt.changedTouches[0].clientY;
 
@@ -219,6 +213,11 @@ export default class FullPage extends React.Component {
       if (touchEnd - this._touchStart > 0 && touchEnd - this._touchStart > 100) {
         this.scrollToSlide(this.state.activeSlide - 1);
       } else if (touchEnd - this._touchStart < 0 && Math.abs(-touchEnd + this._touchStart) > 100) {
+        if (this.state.activeSlide >= this._slides.length - 1) {
+          evt.preventDefault();
+          evt.stopPropagation();
+          return;
+        }
         this.scrollToSlide(this.state.activeSlide + 1);
       } else {
         this.scrollToSlide(this.state.activeSlide);
