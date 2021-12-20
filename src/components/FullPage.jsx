@@ -45,6 +45,11 @@ export default class FullPage extends React.Component {
       document.addEventListener('wheel', this.onScroll, { passive: false });
     }
     window.addEventListener('resize', this.onResize);
+    window.addEventListener('orientationchange', () => {
+      // Generate a resize event if the device doesn't do it
+      this.onResize();
+      this.scrollToSlide(this.props.initialSlide);
+    }, false);
 
     this.onResize();
     this.scrollToSlide(this.props.initialSlide);
@@ -205,24 +210,27 @@ export default class FullPage extends React.Component {
       evt.stopPropagation();
       return;
     }
-    const touchEnd = evt.changedTouches[0].clientY;
 
-    const scrollDiff = window.scrollY - this.xFrom;
+    if (!this._isScrollPending && !this._isScrolledAlready) {
+      const touchEnd = evt.changedTouches[0].clientY;
 
-    if (touchEnd - this._touchStart > 0 && touchEnd - this._touchStart > 100) {
-      this.scrollToSlide(this.state.activeSlide - 1);
-    } else if (touchEnd - this._touchStart < 0 && Math.abs(-touchEnd + this._touchStart) > 100) {
-      this.scrollToSlide(this.state.activeSlide + 1);
-    } else {
-      this.scrollToSlide(this.state.activeSlide);
-    }
+      const scrollDiff = window.scrollY - this.xFrom;
 
-    if (scrollDiff > 0 && scrollDiff > window.innerHeight / 2) {
-      this.scrollToSlide(this.state.activeSlide + 1);
-    } else if (scrollDiff < 0 && Math.abs(scrollDiff) > window.innerHeight / 2) {
-      this.scrollToSlide(this.state.activeSlide - 1);
-    } else {
-      this.scrollToSlide(this.state.activeSlide);
+      if (touchEnd - this._touchStart > 0 && touchEnd - this._touchStart > 100) {
+        this.scrollToSlide(this.state.activeSlide - 1);
+      } else if (touchEnd - this._touchStart < 0 && Math.abs(-touchEnd + this._touchStart) > 100) {
+        this.scrollToSlide(this.state.activeSlide + 1);
+      } else {
+        this.scrollToSlide(this.state.activeSlide);
+      }
+
+      if (scrollDiff > 0 && scrollDiff > window.innerHeight / 2) {
+        this.scrollToSlide(this.state.activeSlide + 1);
+      } else if (scrollDiff < 0 && Math.abs(scrollDiff) > window.innerHeight / 2) {
+        this.scrollToSlide(this.state.activeSlide - 1);
+      } else {
+        this.scrollToSlide(this.state.activeSlide);
+      }
     }
   }
 
