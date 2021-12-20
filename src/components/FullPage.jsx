@@ -202,23 +202,22 @@ export default class FullPage extends React.Component {
   onTouchEnd = (evt) => {
     // const touchEnd = evt.changedTouches[0].clientY;
     // const { touchSensitivity } = this.props;
-    if (!this._isScrollPending && !this._isScrolledAlready) {
-      const scrollDiff = window.scrollY - this.xFrom;
-      console.log('scrollDiff: ', scrollDiff, window.innerHeight);
-      // const scrollDiff = scrollTo - scrollFrom;
+    // if (!this._isScrollPending && !this._isScrolledAlready) {
+    const scrollDiff = window.scrollY - this.xFrom;
+    console.log('scrollDiff: ', scrollDiff, window.innerHeight);
+    // const scrollDiff = scrollTo - scrollFrom;
 
-      if (scrollDiff > 0 && scrollDiff > window.innerHeight / 2) {
-        this.scrollToSlide(this.state.activeSlide + 1);
-      } else {
-        this.scrollToSlide(this.state.activeSlide);
-      }
-
-      if (scrollDiff < 0 && scrollDiff > -window.innerHeight / 2) {
-        this.scrollToSlide(this.state.activeSlide - 1);
-      } else {
-        this.scrollToSlide(this.state.activeSlide);
-      }
+    if (scrollDiff > 0 && scrollDiff > window.innerHeight / 2) {
+      console.log('scroll down');
+      this.scrollToSlide(this.state.activeSlide + 1);
+    } else if (scrollDiff < 0 && Math.abs(scrollDiff) > window.innerHeight / 2) {
+      console.log('scroll up');
+      this.scrollToSlide(this.state.activeSlide - 1);
+    } else {
+      console.log('scroll old pos');
+      this.scrollToSlide(this.state.activeSlide);
     }
+    // }
   }
 
   onScroll = (evt) => {
