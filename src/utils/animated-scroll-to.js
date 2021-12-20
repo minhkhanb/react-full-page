@@ -11,6 +11,7 @@ export default function animatedScrollTo(scrollTo, duration, callback) {
     const newScrollPos = easeInOutCubic(currentTime, scrollFrom, scrollDiff, duration);
 
     window.scrollTo(0, newScrollPos);
+
     if (currentTime > duration) {
       callback();
       return;

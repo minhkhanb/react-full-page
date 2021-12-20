@@ -40,6 +40,7 @@ export default class FullPage extends React.Component {
     if (this._isMobile) {
       document.addEventListener('touchmove', this.onTouchMove, { passive: false });
       document.addEventListener('touchstart', this.onTouchStart);
+      document.addEventListener('touchend', this.onTouchEnd);
     } else {
       document.addEventListener('wheel', this.onScroll, { passive: false });
     }
@@ -74,6 +75,7 @@ export default class FullPage extends React.Component {
     if (this._isMobile) {
       document.removeEventListener('touchmove', this.onTouchMove);
       document.removeEventListener('touchstart', this.onTouchStart);
+      document.removeEventListener('touchend', this.onTouchEnd);
     } else {
       document.removeEventListener('wheel', this.onScroll);
     }
@@ -99,6 +101,8 @@ export default class FullPage extends React.Component {
     this._touchStart = evt.touches[0].clientY;
     this._touchStartX = evt.touches[0].clientX;
     this._isScrolledAlready = false;
+    this.xFrom = window.scrollY || window.pageYOffset || 0;
+    console.log('xFrom: ', this.xFrom);
   }
 
   isVerticalScrollIntent = (changedTouches) => {
@@ -183,14 +187,36 @@ export default class FullPage extends React.Component {
     }
 
     if (!childHasVerticalScroll) {
-      evt.preventDefault();
+      // evt.preventDefault();
 
       if (!this._isScrollPending && !this._isScrolledAlready) {
         if (this._touchStart > touchEnd + touchSensitivity) {
-          this.scrollToSlide(this.state.activeSlide + 1);
+          // this.scrollToSlide(this.state.activeSlide + 1);
         } else if (this._touchStart < touchEnd - touchSensitivity) {
-          this.scrollToSlide(this.state.activeSlide - 1);
+          // this.scrollToSlide(this.state.activeSlide - 1);
         }
+      }
+    }
+  }
+
+  onTouchEnd = (evt) => {
+    // const touchEnd = evt.changedTouches[0].clientY;
+    // const { touchSensitivity } = this.props;
+    if (!this._isScrollPending && !this._isScrolledAlready) {
+      const scrollDiff = window.scrollY - this.xFrom;
+      console.log('scrollDiff: ', scrollDiff, window.innerHeight);
+      // const scrollDiff = scrollTo - scrollFrom;
+
+      if (scrollDiff > 0 && scrollDiff > window.innerHeight / 2) {
+        this.scrollToSlide(this.state.activeSlide + 1);
+      } else {
+        this.scrollToSlide(this.state.activeSlide);
+      }
+
+      if (scrollDiff < 0 && scrollDiff > -window.innerHeight / 2) {
+        this.scrollToSlide(this.state.activeSlide - 1);
+      } else {
+        this.scrollToSlide(this.state.activeSlide);
       }
     }
   }
