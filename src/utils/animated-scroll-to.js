@@ -1,9 +1,7 @@
 import easeInOutCubic from './ease-in-out-cubic';
 
-export default function animatedScrollTo(scrollTo, duration, callback) {
-  const fixedFullpage = document.querySelector('.fixed-fullpage');
-
-  const scrollFrom = fixedFullpage.scrollTop || 0;
+export default function animatedScrollTo(container, scrollTo, duration, callback) {
+  const scrollFrom = container.scrollTop || 0;
   // const scrollFrom = window.scrollY || window.pageYOffset || 0;
   const scrollDiff = scrollTo - scrollFrom;
   let currentTime = 0;
@@ -13,8 +11,8 @@ export default function animatedScrollTo(scrollTo, duration, callback) {
     currentTime += increment;
     const newScrollPos = easeInOutCubic(currentTime, scrollFrom, scrollDiff, duration);
 
-    if (fixedFullpage) {
-      fixedFullpage.scrollTo(0, newScrollPos);
+    if (container) {
+      container.scrollTo(0, newScrollPos);
     }
 
     if (currentTime > duration) {

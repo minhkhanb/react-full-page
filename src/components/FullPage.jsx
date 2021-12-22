@@ -11,8 +11,6 @@ const scrollMode = {
   NORMAL: 'normal',
 };
 
-const $ = document.querySelector.bind(document);
-
 export default class FullPage extends React.Component {
   static getChildrenCount = (children) => {
     const childrenArr = React.Children.toArray(children);
@@ -30,6 +28,8 @@ export default class FullPage extends React.Component {
     this._touchStart = 0;
     this._isMobile = null;
     this.mainContainerRef = React.createRef();
+
+    this.container = this.props.container.parentElement;
 
     this.state = {
       activeSlide: props.initialSlide,
@@ -105,12 +105,11 @@ export default class FullPage extends React.Component {
   }
 
   onTouchStart = (evt) => {
-    const fixedFullpage = $('.fixed-fullpage');
     this._touchStart = evt.touches[0].clientY;
     this._touchStartX = evt.touches[0].clientX;
     this._isScrolledAlready = false;
     // this.xFrom = window.scrollY || window.pageYOffset || 0;
-    this.xFrom = fixedFullpage.scrollTop || 0;
+    this.xFrom = this.container.scrollTop || 0;
   }
 
   isVerticalScrollIntent = (changedTouches) => {
@@ -290,7 +289,7 @@ export default class FullPage extends React.Component {
       });
 
       this._isScrollPending = true;
-      animatedScrollTo(this._slides[slide], this.props.duration, () => {
+      animatedScrollTo(this.container, this._slides[slide], this.props.duration, () => {
         this._isScrollPending = false;
         this._isScrolledAlready = true;
 
@@ -353,6 +352,7 @@ FullPage.propTypes = {
   initialSlide: PropTypes.number,
   scrollMode: PropTypes.oneOf(getObjectValues(scrollMode)),
   touchSensitivity: PropTypes.number,
+  container: PropTypes.string,
 };
 
 FullPage.defaultProps = {
@@ -364,4 +364,5 @@ FullPage.defaultProps = {
   initialSlide: 0,
   scrollMode: scrollMode.FULL_PAGE,
   touchSensitivity: 5,
+  container: '.container-fullpage',
 };
