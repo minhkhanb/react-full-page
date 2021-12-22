@@ -29,8 +29,6 @@ export default class FullPage extends React.Component {
     this._isMobile = null;
     this.mainContainerRef = React.createRef();
 
-    this.container = this.props.container.parentElement;
-
     this.state = {
       activeSlide: props.initialSlide,
       slidesCount: FullPage.getChildrenCount(this.props.children),
@@ -109,6 +107,7 @@ export default class FullPage extends React.Component {
     this._touchStartX = evt.touches[0].clientX;
     this._isScrolledAlready = false;
     // this.xFrom = window.scrollY || window.pageYOffset || 0;
+    this.container = this.mainContainerRef.current.closest('.fixed-fullpage');
     this.xFrom = this.container.scrollTop || 0;
   }
 
@@ -352,7 +351,6 @@ FullPage.propTypes = {
   initialSlide: PropTypes.number,
   scrollMode: PropTypes.oneOf(getObjectValues(scrollMode)),
   touchSensitivity: PropTypes.number,
-  container: PropTypes.string,
 };
 
 FullPage.defaultProps = {
@@ -364,5 +362,4 @@ FullPage.defaultProps = {
   initialSlide: 0,
   scrollMode: scrollMode.FULL_PAGE,
   touchSensitivity: 5,
-  container: '.container-fullpage',
 };
