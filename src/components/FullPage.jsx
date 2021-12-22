@@ -11,6 +11,8 @@ const scrollMode = {
   NORMAL: 'normal',
 };
 
+const $ = document.querySelector.bind(document);
+
 export default class FullPage extends React.Component {
   static getChildrenCount = (children) => {
     const childrenArr = React.Children.toArray(children);
@@ -103,11 +105,12 @@ export default class FullPage extends React.Component {
   }
 
   onTouchStart = (evt) => {
+    const fixedFullpage = $('.fixed-fullpage');
     this._touchStart = evt.touches[0].clientY;
     this._touchStartX = evt.touches[0].clientX;
     this._isScrolledAlready = false;
-    this.xFrom = window.scrollY || window.pageYOffset || 0;
-    console.log('xFrom: ', this.xFrom);
+    // this.xFrom = window.scrollY || window.pageYOffset || 0;
+    this.xFrom = fixedFullpage.scrollTop || 0;
   }
 
   isVerticalScrollIntent = (changedTouches) => {
@@ -142,6 +145,13 @@ export default class FullPage extends React.Component {
 
     const touchEnd = evt.changedTouches[0].clientY;
     const { touchSensitivity } = this.props;
+
+    if (this._touchStart > touchEnd + touchSensitivity
+      || this._touchStart < touchEnd - touchSensitivity) {
+      console.log('hackkkking');
+      evt.preventDefault();
+      return;
+    }
 
     let childHasVerticalScroll = false;
     let element = evt.target;
@@ -205,10 +215,13 @@ export default class FullPage extends React.Component {
   }
 
   onTouchEnd = (evt) => {
+    // const fixedFullpage = $('.fixed-fullpage');
+    // const fixedscrollY = fixedFullpage.scrollTop || 0;
+
     if (!this._isScrollPending && !this._isScrolledAlready) {
       const touchEnd = evt.changedTouches[0].clientY;
 
-      const scrollDiff = window.scrollY - this.xFrom;
+      // const scrollDiff = fixedscrollY - this.xFrom;
 
       if (touchEnd - this._touchStart > 0 && touchEnd - this._touchStart > 100) {
         this.scrollToSlide(this.state.activeSlide - 1);
@@ -223,13 +236,13 @@ export default class FullPage extends React.Component {
         this.scrollToSlide(this.state.activeSlide);
       }
 
-      if (scrollDiff > 0 && scrollDiff > window.innerHeight / 2) {
-        this.scrollToSlide(this.state.activeSlide + 1);
-      } else if (scrollDiff < 0 && Math.abs(scrollDiff) > window.innerHeight / 2) {
-        this.scrollToSlide(this.state.activeSlide - 1);
-      } else {
-        this.scrollToSlide(this.state.activeSlide);
-      }
+      // if (scrollDiff > 0 && scrollDiff > window.innerHeight / 2) {
+      //   this.scrollToSlide(this.state.activeSlide + 1);
+      // } else if (scrollDiff < 0 && Math.abs(scrollDiff) > window.innerHeight / 2) {
+      //   this.scrollToSlide(this.state.activeSlide - 1);
+      // } else {
+      //   this.scrollToSlide(this.state.activeSlide);
+      // }
     }
   }
 
