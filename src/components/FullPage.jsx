@@ -44,7 +44,7 @@ export default class FullPage extends React.Component {
     } else {
       document.addEventListener('wheel', this.onScroll, { passive: false });
     }
-    // window.addEventListener('resize', this.onResize);
+    window.addEventListener('resize', this.onResize);
     window.addEventListener('orientationchange', () => {
       // Generate a resize event if the device doesn't do it
       this.onResize();
