@@ -1,7 +1,7 @@
 import easeInOutCubic from './ease-in-out-cubic';
 
 export default function animatedScrollTo(container, scrollTo, duration, callback) {
-  const scrollFrom = container.scrollTop || 0;
+  const scrollFrom = container ? container.scrollTop : 0;
   // const scrollFrom = window.scrollY || window.pageYOffset || 0;
   const scrollDiff = scrollTo - scrollFrom;
   let currentTime = 0;

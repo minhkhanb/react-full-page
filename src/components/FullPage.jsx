@@ -108,7 +108,8 @@ export default class FullPage extends React.Component {
     this._isScrolledAlready = false;
     // this.xFrom = window.scrollY || window.pageYOffset || 0;
     this.container = this.mainContainerRef.current.closest('.fixed-fullpage');
-    this.xFrom = this.container.scrollTop || 0;
+
+    this.xFrom = this.container ? this.container.scrollTop : 0;
   }
 
   isVerticalScrollIntent = (changedTouches) => {
@@ -146,7 +147,6 @@ export default class FullPage extends React.Component {
 
     if (this._touchStart > touchEnd + touchSensitivity
       || this._touchStart < touchEnd - touchSensitivity) {
-      console.log('hackkkking');
       evt.preventDefault();
       return;
     }
